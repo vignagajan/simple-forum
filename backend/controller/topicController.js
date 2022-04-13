@@ -15,6 +15,10 @@ const getTopics = (req,res) => {
 */
 
 const setTopics = (req,res) => {
+    if(!req.body.text){
+        res.status(400)
+        throw new Error('Add text field!')
+    }
     res.status(200).json({message: 'Set Topic'})
 }
 
