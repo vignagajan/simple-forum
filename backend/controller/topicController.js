@@ -1,4 +1,4 @@
-const asyncHandler = require('express-async-hander')
+const asyncHandler = require('express-async-handler')
 
 /*
     desc: Get Topics
