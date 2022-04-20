@@ -60,7 +60,8 @@ const registerUser = asyncHandler( async (req,res) => {
         res.status(201).json({
             _id: user._id,
             username: user.username,
-            email: user.mail
+            email: user.mail,
+            token: generateToken(user._id)
         })
     }else{
         res.status(400)
@@ -100,7 +101,8 @@ const loginUser = asyncHandler( async (req,res) => {
         res.status(200).json({
             _id: user._id,
             username: user.username,
-            email: user.mail
+            email: user.mail,
+            token: generateToken(user._id)
         })
 
     }else{
@@ -168,6 +170,13 @@ const deleteMe = asyncHandler( async (req,res) => {
 
     res.status(200).json({ id: req.params.id })
 })
+
+// Generate JWT
+const generateToken = (id) => {
+    return jwt.sign({ id }, process.env.JWT_SECRET,{
+        expiresIn: '30d'
+    })
+}
 
 module.exports = {
     registerUser,
