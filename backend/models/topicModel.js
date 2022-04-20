@@ -1,5 +1,38 @@
 const mongoose = require('mongoose')
 
+const voteSchema = mongoose.Schema(
+    { 
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true,'Please add a user'],
+            ref: 'User'
+        }
+        }
+        ,
+        {
+            timestamps: true,
+        } 
+);
+
+const commentSchema = mongoose.Schema(
+    { 
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true,'Please add a user'],
+            ref: 'User'
+        },
+        comment:{
+            type: String,
+            ref:'Comment'
+        },
+        votes:[voteSchema]
+        }
+        ,
+        {
+            timestamps: true,
+        } 
+);
+
 const topicSchema = mongoose.Schema(
     {
         title:{
@@ -15,15 +48,15 @@ const topicSchema = mongoose.Schema(
             required: [true,'Please add a user'],
             ref: 'User'
         },
-        parent:{
-            type: mongoose.Schema.Types.ObjectId,
-            required: [true,'Please add a parent'],
-            ref:'Topic'
-        }
+        comments: [commentSchema]
     },
     {
         timestamps: true,
     }
 )
 
-module.exports = mongoose.model('Topic',topicSchema)
+const Topic = mongoose.model('Topic',topicSchema)
+const Comment = mongoose.model('Comment',topicSchema)
+const Vote = mongoose.model('Vote',topicSchema)
+
+module.exports = { Topic, Comment, Vote }

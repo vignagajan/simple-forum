@@ -1,5 +1,6 @@
 const express = require('express')
 const connectDb = require('./config/db')
+const { getTopics, setTopic } = require('./controller/topicController')
 const errorHandler = require('./middleware/errorMiddleware')
 const dotenv = require('dotenv').config()
 const port = process.env.port || 5000
@@ -7,14 +8,14 @@ const port = process.env.port || 5000
 connectDb()
 
 const app = express()
-
+    
 // Handle post requests
 app.use(express.json())
 app.use(express.urlencoded({ extended: false}))
 
 // Routes
-app.use('/api/topics', require('./routes/topicRoutes'))
-app.use('/api/users', require('./routes/userRoutes'))
+app.use('/api/topic', require('./routes/topicRoutes'))
+app.use('/api/user', require('./routes/userRoutes'))
 
 // Custom error handler
 app.use(errorHandler)
