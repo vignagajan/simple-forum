@@ -44,16 +44,14 @@ const registerUser = asyncHandler( async (req,res) => {
     }
 
     // Hash Password
-    // const salt = await bcrypt.genSalt(42)
-    // console.log("Bcrypt started...")
-    // const hpassword = await bcrypt.hash(password,salt)
-    // console.log("Bcrypt finished...")
+    const salt = await bcrypt.genSalt(10)
+    const hpassword = await bcrypt.hash(password,salt)
 
     //Create user
     const user = await User.create({
         username: username,
         email: email,
-        password: password,
+        password: hpassword,
     })
 
     if(user){
@@ -96,8 +94,7 @@ const loginUser = asyncHandler( async (req,res) => {
         throw new Error('User not found, Register as user!')
     }
 
-    // await bcrypt.compare(password,user.password)
-    if(user && (password == user.password)){
+    if(user && (await bcrypt.compare(password,user.password))){
         res.status(200).json({
             _id: user._id,
             username: user.username,
@@ -123,14 +120,13 @@ const loginUser = asyncHandler( async (req,res) => {
 
 const getMe = asyncHandler( async (req,res) => {
 
-    const users = await User.find()
-    
-    if(!user){
-        res.status(400)
-        throw new Error('User not found, Register as user!')
-    }
+    const user = await User.findById(req.user.id)
 
-    res.status(200).json(user)
+    res.status(200).json({ 
+        _id: user._id,
+        username: user.username,
+        email: user.email
+    })
 })
 
 /*
