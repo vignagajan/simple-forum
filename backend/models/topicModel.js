@@ -4,19 +4,21 @@ const topicSchema = mongoose.Schema(
     {
         title:{
             type: String,
-            required: [true,'Please add topic title']
+            required: [true,'Please add a topic title']
         },
         body:{
             type: String,
-            required: [true,'Please add topic body']
+            required: [true,'Please add a topic body']
         },
-        userid:{
-            type: String,
-            required: [true,'Please add user id']
+        user:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true,'Please add a user'],
+            ref: 'User'
         },
-        parentid:{
-            type: String,
-            required: [true,'Please add parent id']
+        parent:{
+            type: mongoose.Schema.Types.ObjectId,
+            required: [true,'Please add a parent'],
+            ref:'Topic'
         }
     },
     {
