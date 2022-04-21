@@ -3,8 +3,8 @@ const asyncHandler = require('express-async-handler')
 const Topic = require('../models/topicModel')
 
 /*
-    desc: Get Topics
-    route: GET /api/topics
+    desc: Get Topic
+    route: GET /api/topic
     access: Private
 */
 
@@ -12,15 +12,41 @@ const getTopics = asyncHandler( async (req,res) => {
 
     const topics = await Topic.find()
     res.status(200).json(topics)
+
 })
 
 /*
-    desc: Set Topics
-    route: POST /api/topics/:id
+    desc: Get Topic
+    route: GET /api/topic
     access: Private
 */
 
-const setTopics = asyncHandler( async (req,res) => {
+const getMyTopics = asyncHandler( async (req,res) => {
+
+    const topics = await Topic.find({ user: req.user.id })
+    res.status(200).json(topics)
+
+})
+
+/*
+    desc: Get Topic
+    route: GET /api/topic
+    access: Private
+*/
+
+const getTopic = asyncHandler( async (req,res) => {
+
+    const topic = await Topic.findById(req.params.id)
+    res.status(200).json(topic)
+})
+
+/*
+    desc: Set Topic
+    route: POST /api/topic/:id
+    access: Private
+*/
+
+const setTopic = asyncHandler( async (req,res) => {
     if(!req.body.title){
         res.status(400)
         throw new Error('Please add title field!')
@@ -29,31 +55,23 @@ const setTopics = asyncHandler( async (req,res) => {
         res.status(400)
         throw new Error('Please add body field!')
     }
-    if(!req.body.userid){
-        res.status(400)
-        throw new Error('Please add userid field!')
-    }
-    if(!req.body.parentid){
-        res.status(400)
-        throw new Error('Please add parentid field!')
-    }
+
 
     const topic = await Topic.create({
         title: req.body.title,
         body: req.body.body,
-        userid: req.body.userid,
-        parentid: req.body.parentid,
+        user: req.user.id,
     })
 
     res.status(200).json(topic)
 })
 
 /*
-    desc: Update Topics
-    route: PUT /api/topics/:id
+    desc: Update Topic
+    route: PUT /api/topic/:id
     access: Private
 */
-const updateTopics = asyncHandler( async (req,res) => {
+const updateTopic = asyncHandler( async (req,res) => {
     const topic = await Topic.findById(req.params.id)
 
     if(!topic){
@@ -69,11 +87,11 @@ const updateTopics = asyncHandler( async (req,res) => {
 })
 
 /*
-    desc: Delete Topics
-    route: DELETE  /api/topics/:id
+    desc: Delete Topic
+    route: DELETE  /api/topic/:id
     access: Private
 */
-const deleteTopics = asyncHandler( async (req,res) => {
+const deleteTopic = asyncHandler( async (req,res) => {
     const topic = await Topic.findById(req.params.id)
 
     if(!topic){
@@ -88,7 +106,9 @@ const deleteTopics = asyncHandler( async (req,res) => {
 
 module.exports = {
     getTopics,
-    setTopics,
-    updateTopics,
-    deleteTopics,
+    getMyTopics,
+    getTopic,
+    setTopic,
+    updateTopic,
+    deleteTopic,
 }
