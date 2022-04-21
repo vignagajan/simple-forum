@@ -55,8 +55,4 @@ const topicSchema = mongoose.Schema(
     }
 )
 
-const Topic = mongoose.model('Topic',topicSchema)
-const Comment = mongoose.model('Comment',topicSchema)
-const Vote = mongoose.model('Vote',topicSchema)
-
-module.exports = { Topic, Comment, Vote }
+module.exports = mongoose.model('Topic',topicSchema)
