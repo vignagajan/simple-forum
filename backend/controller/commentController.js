@@ -45,7 +45,7 @@ const addComment = asyncHandler(async (req, res) => {
       throw new Error(err);
     }
   });
-  res.status(200).json(topic.comments);
+  res.status(200).json({ comment: req.body.comment, user: req.user.id });
 });
 
 /*
@@ -54,6 +54,28 @@ const addComment = asyncHandler(async (req, res) => {
     access: Private
 */
 const deleteComment = asyncHandler(async (req, res) => {
+  const topic = await Topic.findById(req.params.id);
+  if (!topic) {
+    res.status(400);
+    throw new Error("Topic not found");
+  }
+  topic.comments.id(req.params.cid).remove();
+
+  topic.save(function (err) {
+    if (err) {
+      res.status(400);
+      throw new Error(err);
+    }
+  });
+  res.status(200).json({message: `Comment with id: ${req.params.cid} Deleted`});
+});
+
+/*
+    desc: Vote comment
+    route: PUT /api/topic/:id/:cid/vote
+    access: Public
+*/
+const voteComment = asyncHandler(async (req, res) => {
   const topic = await Topic.findById(req.params.id);
   if (!topic) {
     res.status(400);
@@ -71,4 +93,5 @@ module.exports = {
   getComments,
   addComment,
   deleteComment,
+  voteComment,
 };
