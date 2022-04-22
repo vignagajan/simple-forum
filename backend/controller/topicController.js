@@ -104,6 +104,60 @@ const deleteTopic = asyncHandler( async (req,res) => {
     res.status(200).json({ id: req.params.id })
 })
 
+
+/*
+    desc: Up Vote Topic
+    route: PUT /api/topic/:id/up
+    access: Private
+*/
+const upVoteTopic = asyncHandler(async (req, res) => {
+    const topic = await Topic.findById(req.params.id);
+    if (!topic) {
+      res.status(400);
+      throw new Error("Topic not found");
+    }
+    
+    if (topic.votes.find((el) => el.user == req.user.id)) {
+      res.status(400);
+      throw new Error("Already voted");
+    }
+    topic.votes.push({ user: req.user.id });
+    topic.save(function (err) {
+      if (err) {
+        res.status(400);
+        throw new Error(err);
+      }
+    });
+    res.status(200).json({ message: `Up voted topic: ${req.params.id}` });
+  });
+  
+  /*
+      desc: Down Vote Topic
+      route: PUT /api/topic/:id/:cid/down
+      access: Private
+  */
+  const downVoteTopic = asyncHandler(async (req, res) => {
+    const topic = await Topic.findById(req.params.id);
+    if (!topic) {
+      res.status(400);
+      throw new Error("Topic not found");
+    }
+    const vote = topic.votes.find((el) => el.user == req.user.id);
+    if (!vote) {
+      res.status(400);
+      throw new Error("Not voted yet");
+    }
+    topic.votes.id(vote.id).remove();
+    topic.save(function (err) {
+      if (err) {
+        res.status(400);
+        throw new Error(err);
+      }
+    });
+    res.status(200).json({ message: `Down voted Topic: ${req.params.id}` });
+  });
+
+  
 module.exports = {
     getTopics,
     getMyTopics,
@@ -111,4 +165,6 @@ module.exports = {
     setTopic,
     updateTopic,
     deleteTopic,
+    upVoteTopic,
+    downVoteTopic,
 }

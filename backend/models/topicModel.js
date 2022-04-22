@@ -48,7 +48,8 @@ const topicSchema = mongoose.Schema(
             required: [true,'Please add a user'],
             ref: 'User'
         },
-        comments: [commentSchema]
+        comments: [commentSchema],
+        votes: [voteSchema],
     },
     {
         timestamps: true,
