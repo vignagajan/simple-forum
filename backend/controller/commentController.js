@@ -67,31 +67,68 @@ const deleteComment = asyncHandler(async (req, res) => {
       throw new Error(err);
     }
   });
-  res.status(200).json({message: `Comment with id: ${req.params.cid} Deleted`});
+  res
+    .status(200)
+    .json({ message: `Comment with id: ${req.params.cid} Deleted` });
 });
 
 /*
-    desc: Vote comment
-    route: PUT /api/topic/:id/:cid/vote
-    access: Public
+    desc: Up Vote comment
+    route: PUT /api/topic/:id/:cid/up
+    access: Private
 */
-const voteComment = asyncHandler(async (req, res) => {
+const upVoteComment = asyncHandler(async (req, res) => {
   const topic = await Topic.findById(req.params.id);
   if (!topic) {
     res.status(400);
     throw new Error("Topic not found");
   }
-  topic.comments.id(req.params.cid).remove();
+  const comment = topic.comments.id(req.params.cid);
+  if (comment.votes.find((el) => el.user == req.user.id)) {
+    res.status(400);
+    throw new Error("Already voted");
+  }
+  comment.votes.push({ user: req.user.id });
   topic.save(function (err) {
-    if (err) return handleError(err);
-    console.log("Success!");
+    if (err) {
+      res.status(400);
+      throw new Error(err);
+    }
   });
-  res.status(200).json(topic.comments);
+  res.status(200).json({ message: `Up voted comment: ${req.params.cid}` });
+});
+
+/*
+    desc: Down Vote comment
+    route: PUT /api/topic/:id/:cid/down
+    access: Private
+*/
+const downVoteComment = asyncHandler(async (req, res) => {
+  const topic = await Topic.findById(req.params.id);
+  if (!topic) {
+    res.status(400);
+    throw new Error("Topic not found");
+  }
+  const comment = topic.comments.id(req.params.cid);
+  const vote = comment.votes.find((el) => el.user == req.user.id);
+  if (!vote) {
+    res.status(400);
+    throw new Error("Not voted yet");
+  }
+  comment.votes.id(vote.id).remove();
+  topic.save(function (err) {
+    if (err) {
+      res.status(400);
+      throw new Error(err);
+    }
+  });
+  res.status(200).json({ message: `Down voted comment: ${req.params.cid}` });
 });
 
 module.exports = {
   getComments,
   addComment,
   deleteComment,
-  voteComment,
+  upVoteComment,
+  downVoteComment,
 };

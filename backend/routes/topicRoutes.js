@@ -1,6 +1,6 @@
 const express = require('express')
 const { getTopic, updateTopic, deleteTopic, setTopic, getTopics, getMyTopics } = require('../controller/topicController')
-const { getComments, addComment, deleteComment } = require('../controller/commentController')
+const { getComments, addComment, deleteComment, upVoteComment, downVoteComment } = require('../controller/commentController')
 const { protect } = require('../middleware/authMiddleware')
 const router = express.Router()
 
@@ -13,4 +13,7 @@ router.route('/:id').put(updateTopic).delete(deleteTopic)
 router.route('/:id/comments').get(getComments)
 router.route('/:id').post(protect, addComment)
 router.route('/:id/:cid').delete(protect, deleteComment)
+router.route('/:id/:cid/up').put(protect, upVoteComment)
+router.route('/:id/:cid/down').put(protect, downVoteComment)
+
 module.exports = router 
