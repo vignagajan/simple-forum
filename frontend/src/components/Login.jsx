@@ -1,6 +1,6 @@
-import {Helmet} from "react-helmet";
 import {Link} from 'react-router-dom';
 import { useState } from 'react';
+import "./login.css"
 
 function Login() {
 
@@ -10,9 +10,6 @@ function Login() {
   return (
 
     <div className="login-form">
-      <Helmet>
-      <link rel="stylesheet" href="../assets/css/login.css"></link>
-      </Helmet>
       <form method="post">
           <div className="form-group"> 
             <label><b>Username or email:</b></label>
@@ -32,7 +29,7 @@ function Login() {
           </div>
         <button type="submit" className="btn btn-dark">Log In</button>
         <div className="sign-up">
-            Don't have an account? <Link to='register'>Create One</Link>
+            Don't have an account? <Link to='../register'>Create One</Link>
         </div>
       </form>
 </div>
