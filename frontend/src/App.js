@@ -3,6 +3,7 @@ import Footer from "./components/Footer";
 import Header from "./components/Header";
 import Login from "./components/Login";
 import Home from "./pages/Home";
+import Topic from "./pages/Topic";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
           <Routes>
             <Route path='/' element={<Home />}/>
             <Route path='/login' element={<Login />}/>
+            <Route path='/topic' element={<Topic />}/>
           </Routes>
 
         </div>
