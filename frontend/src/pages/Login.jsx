@@ -4,27 +4,47 @@ import "./login.css"
 
 function Login() {
 
-  const [username, setUserName] = useState("");
-  const [password, setPassword] = useState("");
+  const [formData, setFormData] = useState({
+    username:'',
+    email:'',
+    password:'',
+    cpassword:'',
+});
+
+const { username, password } = formData
+
+const onChange = (e) =>{
+    setFormData((prevState) => ({
+      ...prevState,
+      [e.target.name]: [e.target.value]
+    }))
+}
+const onSubmit = (e) => {
+  e.prevetDefault()
+}
 
   return (
 
     <div className="login-form">
-      <form method="post">
+      <form onSubmit={onSubmit}>
           <div className="form-group"> 
             <label><b>Username or email:</b></label>
             <input
               type="text" 
+              id="username"
+              name="username"
               value={username}
-              onChange={(e) => setUserName(e.target.value)}
+              onChange={onChange}
             />
           </div>
           <div className="form-group"> 
             <label><b>Password:</b></label>
             <input
-              type="text" 
+              type="password" 
+              id="password"
+              name="password"
               value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              onChange={onChange}
             />
           </div>
         <button type="submit" className="btn btn-dark">Log In</button>

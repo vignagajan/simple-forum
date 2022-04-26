@@ -4,7 +4,7 @@ const { getComments, addComment, deleteComment } = require('../controller/commen
 const { protect } = require('../middleware/authMiddleware')
 const router = express.Router()
 
-router.route('/all').get(protect,getTopics)
+router.route('/all').get(getTopics)
 router.route('/my').get(protect,getMyTopics)
 router.route('/').post(protect ,setTopic)
 router.route('/:id').get(getTopic)

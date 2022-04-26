@@ -10,7 +10,7 @@ const Topic = require('../models/topicModel')
 
 const getTopics = asyncHandler( async (req,res) => {
 
-    const topics = await Topic.find()
+    const topics = await Topic.find().populate("user")
     res.status(200).json(topics)
 
 })

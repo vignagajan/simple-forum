@@ -1,5 +1,6 @@
 const express = require('express')
 const connectDb = require('./config/db')
+const cors = require('cors')
 const { getTopics, setTopic } = require('./controller/topicController')
 const errorHandler = require('./middleware/errorMiddleware')
 const dotenv = require('dotenv').config()
@@ -8,6 +9,8 @@ const port = process.env.port || 5000
 connectDb()
 
 const app = express()
+
+app.use(cors())
     
 // Handle post requests
 app.use(express.json())
