@@ -1,22 +1,33 @@
+import {Link, useParams} from 'react-router-dom';
+import axios from '../axios'
+import { useEffect, useState } from "react";
+
 function Topic() {
+
+  const params = useParams();
+
+  const [topic, setTopic] = useState({});
+
+  useEffect(() => {
+    axios.get(`/topic/${params.id}`).then((res)=>{
+    setTopic(res.data)
+  }).catch((error) => {
+    console.log(error.response.data)
+  })}, [])
+
   return (
     <div className="container pt-5">
       <div className="row content pt-5">
-        <h2>Officially Blogging</h2>
+      <div className="d-flex justify-content-between">
+        <h2>{topic.title}</h2>
         <h5>
-          <span className="glyphicon glyphicon-time"></span> Asked by John Doe, Sep
-          24, 2015.
+          <span className="glyphicon glyphicon-time"></span> Post by {topic.user.username}, {new Date(topic.createdAt).toLocaleString("en-US")}.
         </h5>
+        </div>
+        <br /><br />
+        <hr /><br />
         <p>
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do
-          eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad
-          minim veniam, quis nostrud exercitation ullamco laboris nisi ut
-          aliquip ex ea commodo consequat. Excepteur sint occaecat cupidatat non
-          proident, sunt in culpa qui officia deserunt mollit anim id est
-          laborum consectetur adipiscing elit, sed do eiusmod tempor incididunt
-          ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis
-          nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo
-          consequat.
+         {topic.body}
         </p>
         <hr />
 

@@ -36,7 +36,7 @@ const getMyTopics = asyncHandler( async (req,res) => {
 
 const getTopic = asyncHandler( async (req,res) => {
 
-    const topic = await Topic.findById(req.params.id)
+    const topic = await Topic.findById(req.params.id).populate("user")
     res.status(200).json(topic)
 })
 
