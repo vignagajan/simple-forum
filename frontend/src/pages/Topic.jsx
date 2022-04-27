@@ -1,79 +1,116 @@
-import {Link, useParams} from 'react-router-dom';
-import axios from '../axios'
+import { useParams } from "react-router-dom";
+import axios from "../axios";
 import { useEffect, useState } from "react";
 
 function Topic() {
-
   const params = useParams();
 
   const [topic, setTopic] = useState({});
+  const [commentForm, setCommentForm] = useState({ comment: "" });
+
+  const { comment } = commentForm;
 
   useEffect(() => {
-    axios.get(`/topic/${params.id}`).then((res)=>{
-    setTopic(res.data)
-  }).catch((error) => {
-    console.log(error.response.data)
-  })}, [])
+    axios
+      .get(`/topic/${params.id}`)
+      .then((res) => {
+        setTopic(res.data);
+      })
+      .catch((error) => {
+        console.log(error.response.data);
+      });
+  }, []);
 
+  const onChange = (e) => {
+    setCommentForm((prevState) => ({
+      ...prevState,
+      [e.target.name]: [e.target.value],
+    }));
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault();
+    if (!comment) {
+      alert("Enter a comment");
+    }
+    axios
+      .post(`/topic/${params.id}`, {
+        comment: comment[0],
+      })
+      .then(function (response) {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  console.log(topic);
   return (
-    <div className="container pt-5">
-      <div className="row content pt-5">
-      <div className="d-flex justify-content-between">
-        <h2>{topic.title}</h2>
-        <h5>
-          <span className="glyphicon glyphicon-time"></span> Post by {topic.user.username}, {new Date(topic.createdAt).toLocaleString("en-US")}.
-        </h5>
-        </div>
-        <br /><br />
-        <hr /><br />
-        <p>
-         {topic.body}
-        </p>
-        <hr />
-
-        <h4>Leave a Comment:</h4>
-        <form>
-          <div className="form-group">
-            <textarea className="form-control" rows="3" required></textarea>
-          </div>
-          <button type="submit" className="btn btn-success">
-            Submit
-          </button>
-        </form>
-        <br />
-        <br />
-
-        <p>
-          <span className="badge">2</span> Comments:
-        </p>
-        <br />
-
-        <div className="row">
-          <div className="col-sm-12">
-            <h4>
-              Anja <small>Sep 29, 2015, 9:12 PM</small>
-            </h4>
-            <p>
-              Keep up the GREAT work! I am cheering for you!! Lorem ipsum dolor
-              sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-              incididunt ut labore et dolore magna aliqua.
-            </p>
+    <div className="container">
+      {topic.user ? (
+        <div className="row content">
+          <div className="d-flex justify-content-between">
+            <h2>{topic.title}</h2>
             <br />
           </div>
-          <div className="col-sm-12">
-            <h4>
-              John Row <small>Sep 25, 2015, 8:25 PM</small>
-            </h4>
-            <p>
-              I am so happy for you man! Finally. I am looking forward to read
-              about your trendy life. Lorem ipsum dolor sit amet, consectetur
-              adipiscing elit, sed do eiusmod tempor incididunt ut labore et
-              dolore magna aliqua.
-            </p>
-            <br />
+          <div className="h6">
+            <span className="glyphicon glyphicon-time"></span> Asked by{" "}
+            {topic.user.name},{" "}
+            {new Date(topic.createdAt).toLocaleString("en-US")}.
+          </div>
+          <hr />
+          <br />
+          <p>{topic.body}</p>
+          <hr />
+
+          <div className="h6">Leave a Comment:</div>
+          <form>
+            <div className="form-group">
+              <textarea
+                id="comment"
+                name="comment"
+                className="form-control"
+                rows="3"
+                value={comment}
+                onChange={onChange}
+                required
+              ></textarea>
+            </div>
+            <button className="btn btn-success" onClick={onSubmit}>
+              Submit
+            </button>
+          </form>
+          <br />
+          <br />
+          <p className="pt-3">
+            <span className="badge bg-secondary display-6">
+              {topic.comments.length}
+            </span>{" "}
+            Comments:
+          </p>
+          <br />
+
+          <div className="row">
+            {topic.comments.map((comment, i) => {
+              return (
+                <div key={i} className="col-sm-12">
+                  <div>
+                    <b>{comment.user}</b>{" "}
+                    <small>
+                      {new Date(comment.createdAt).toLocaleString("en-US")}
+                    </small>
+                  </div>
+                  <p className="alert alert-secondary">{comment.comment}</p>
+                </div>
+              );
+            })}
           </div>
         </div>
-      </div>
+      ) : (
+        <div>Loading</div>
+      )}
     </div>
   );
 }
