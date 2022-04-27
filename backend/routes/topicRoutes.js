@@ -13,7 +13,7 @@ router.route('/:id/up').put(protect, upVoteTopic)
 router.route('/:id/down').put(protect, downVoteTopic)
 
 router.route('/:id/comments').get(getComments)
-router.route('/:id').post(protect, addComment)
+router.route('/:id').post(addComment)
 router.route('/:id/:cid').put(protect, updateComment)
 router.route('/:id/:cid').delete(protect, deleteComment)
 router.route('/:id/:cid/up').put(protect, upVoteComment)
