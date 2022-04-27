@@ -10,8 +10,6 @@ div {
   font-size: 15px;
   line-height: 24px;
   color: #737373;
-  position: fixed;
-  bottom: 0;
   width: 100%;
 }
 .copyright-text {

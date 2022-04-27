@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import axios from "../axios";
 import { useEffect, useState } from "react";
+import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
 function Topic() {
   const params = useParams();
@@ -58,11 +59,20 @@ function Topic() {
           <div className="h6">
             <span className="glyphicon glyphicon-time"></span> Asked by{" "}
             {topic.user.name},{" "}
-            {new Date(topic.createdAt).toLocaleString("en-US")}.
+            {new Date(topic.createdAt).toLocaleString("ta-LK")}.
           </div>
           <hr />
           <br />
-          <p>{topic.body}</p>
+          <div className="row pb-3">
+            <div className="row text-center col-sm-1">
+              <FaCaretUp size={30} />
+              <span className="fs-4 text-center">{topic.votes.length}</span>
+              <FaCaretDown size={30} />
+            </div>
+            <div className="col-sm-11">
+              <p>{topic.body}</p>
+            </div>
+          </div>
           <hr />
 
           <div className="h6">Leave a Comment:</div>
@@ -84,32 +94,53 @@ function Topic() {
           </form>
           <br />
           <br />
-          <p className="pt-3">
+          <p className="h4 pt-3">
             <span className="badge bg-secondary display-6">
               {topic.comments.length}
             </span>{" "}
             Comments:
           </p>
           <br />
-
+          <hr />
           <div className="row">
             {topic.comments.map((comment, i) => {
               return (
-                <div key={i} className="col-sm-12">
-                  <div>
-                    <b>{comment.user}</b>{" "}
-                    <small>
-                      {new Date(comment.createdAt).toLocaleString("en-US")}
-                    </small>
+                <div key={i}>
+                  <div className="card">
+                    <div className="card-header">
+                      <span className="glyphicon glyphicon-time"></span>{" "}
+                      Answered by {comment.user},{" "}
+                      {new Date(comment.createdAt).toLocaleString("ta-LK")}.
+                    </div>
+                    <div className="card-body">
+                      <div className="row pb-3">
+                        <div className="col-sm-1">
+                          <div className="row text-center">
+                            <FaCaretUp size={30} />
+                            <span className="fs-5 text-center">
+                              {comment.votes.length}
+                            </span>
+                            <FaCaretDown size={30} />
+                          </div>
+                        </div>
+                        <div className="col-sm-11">
+                          <p>{comment.comment}</p>
+                        </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="alert alert-secondary">{comment.comment}</p>
+                  <br />
                 </div>
               );
             })}
           </div>
         </div>
       ) : (
-        <div>Loading</div>
+        <div className="d-flex justify-content-center py-5">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       )}
     </div>
   );
