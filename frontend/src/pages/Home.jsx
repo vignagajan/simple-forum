@@ -2,26 +2,104 @@ import { IconContext } from "react-icons";
 import { BsFillChatDotsFill , BsFillHandThumbsUpFill} from "react-icons/bs";
 import "./home.css"
 import axios from '../axios'
-import { useEffect, useState } from "react";
-import { Link } from 'react-router-dom';
+import { useContext, useEffect, useState } from "react";
+import { Link, useNavigate } from 'react-router-dom';
+import { toast, ToastContainer } from "react-toastify";
+import 'react-toastify/dist/ReactToastify.css';
+
+import { UserContext } from '../context/UserContext.js'
 
 function Home() {
+
+  const userDetails = useContext(UserContext);
+
+  const [formData, setFormData] = useState({
+    title:'',
+    body:'',
+    user: userDetails._id,
+  });
+
+  const navigate = useNavigate()
+
+  const { title, body, user} = formData
+
+  const onChange = (e) =>{
+      setFormData((prevState) => ({
+        ...prevState,
+        [e.target.name]: [e.target.value]
+      }))
+  }
+
+  const config = {
+    headers: { Authorization: `Bearer ${userDetails.token}` }
+  };
+
+  const onSubmit = (e) => {
+    e.preventDefault()
+      axios.post("/topic",formData, config).then((res)=>{
+      toast.success("Post created successfully!")
+      // navigate(`/topic/${res.data._id}`)
+    }).catch((error) => {
+      toast.error(error.response.data)
+    })
+  }
 
   const [topic, setTopic] = useState([])
   
   useEffect(() => {
     axios.get("/topic/all").then((res)=>{
-    setTopic(res.data) 
+    setTopic( res.data) 
   }).catch((error) => {
     console.log(error.response.data)
   })}, [])
 
+  const updateTopic = (item)=>{
+  axios.get(`/topic/${item.data._id}`).then((res)=>{
+    setTopic(item) 
+  }).catch((error) => {
+    console.log(error.response.data)
+  })}
+
   return (
   <>
+    <ToastContainer />
     <div className="row content">
     <div className="col-sm-9">
-      
-      <h4><small>RECENT POSTS</small></h4>
+    <br />
+    { userDetails.username ?
+    <>
+    <h2>Post a topic </h2>
+    <form onSubmit={onSubmit}>
+      <div className="form-group">
+      <input 
+        className="form-control" 
+        rows="3"
+        type="text" 
+        id="title"
+        name="title"
+        value={title} 
+        placeholder="Enter your topic title here..." 
+        onChange={onChange}
+        required/>
+      <textarea 
+        className="form-control" 
+        rows="3"
+        id="body"
+        name="body"
+        value={body} 
+        placeholder="Enter your topic details here..." 
+        onChange={onChange}
+        required>
+      </textarea>
+      </div>
+      <button type="submit" className="btn btn-success">
+        POST
+      </button>
+    </form>
+    </>
+    : <><br /> <Link to="/login"><button type="submit" className="w-25 btn btn-success"> Login to Post Topic</button></Link></>}
+    <br /><br /><br /><br />
+      <h4><small>RECENT TOPICS</small></h4>
       <hr />
       {topic.map((item, i) => {
         return (
@@ -43,6 +121,13 @@ function Home() {
               <h5><span className="label label-danger">Food</span> <span className="label label-primary">Ipsum</span></h5><br />
               <h5><span className="glyphicon glyphicon-time"></span> Post by {item.user.username}, {new Date(item.createdAt).toLocaleString("en-US")}.</h5>
             </div>
+            { userDetails.username ?
+            <>
+            <div className="d-flex justify-content-end">
+            <button className="btn btn-primary" style={{width:"10%", marginRight:"10px"}} onCLick={updateTopic}> Update </button>
+            <button className="btn btn-danger" style={{width:"10%"}}> Delete </button>
+            </div>
+            </>:<></>}
             <hr />
           </div>
         );

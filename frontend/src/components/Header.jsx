@@ -1,11 +1,15 @@
-import { useState } from 'react';
+import { useContext, useState } from 'react';
 import {Link} from 'react-router-dom';
+import { UserContext, UserDispatchContext } from '../context/UserContext.js'
 
 function Header() {
 
   const [isNavCollapsed, setIsNavCollapsed] = useState(true);
 
   const handleNavCollapse = () => setIsNavCollapsed(!isNavCollapsed);
+
+  const userDetails = useContext(UserContext);
+  const setUserDetails = useContext(UserDispatchContext);
 
   return (
     <>
@@ -27,9 +31,16 @@ function Header() {
             <li className="nav-item">
               <Link className="nav-link" to="/register">Register</Link>
             </li>
+            { userDetails.username ?
+              <li className="nav-item">
+                <Link className="nav-link" to="/logout">Logout</Link>
+              </li>
+              :
             <li className="nav-item">
               <Link className="nav-link" to="/login">Login</Link>
             </li>
+            }
+
           </ul>
         </div>
       </div>

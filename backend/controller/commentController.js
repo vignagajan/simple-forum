@@ -9,7 +9,7 @@ const Topic = require("../models/topicModel");
 */
 
 const getComments = asyncHandler(async (req, res) => {
-  const topic = await Topic.findById(req.params.id);
+  const topic = await Topic.findById(req.params.id).populate("user");
 
   if (!topic) {
     res.status(400);

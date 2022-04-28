@@ -47,19 +47,19 @@ const getTopic = asyncHandler( async (req,res) => {
 */
 
 const setTopic = asyncHandler( async (req,res) => {
-    if(!req.body.title){
+    if(!req.body.title[0]){
         res.status(400)
         throw new Error('Please add title field!')
     }
-    if(!req.body.body){
+    if(!req.body.body[0]){
         res.status(400)
         throw new Error('Please add body field!')
     }
 
 
     const topic = await Topic.create({
-        title: req.body.title,
-        body: req.body.body,
+        title: req.body.title[0],
+        body: req.body.body[0],
         user: req.user.id,
     })
 

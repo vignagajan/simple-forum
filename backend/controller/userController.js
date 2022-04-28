@@ -11,7 +11,9 @@ const User = require('../models/userModel')
 
 const registerUser = asyncHandler( async (req,res) => {
 
-    const { username, email, password } = req.body
+    const username = req.body.username[0]
+    const password = req.body.password[0]
+    const email = req.body.email[0]
 
     if(!username){
         res.status(400)
@@ -76,7 +78,7 @@ const registerUser = asyncHandler( async (req,res) => {
 
 const loginUser = asyncHandler( async (req,res) => {
 
-    const { username, password } = req.body
+    const { username, password } = await req.body
 
     if(!username){
         res.status(400)
@@ -94,7 +96,7 @@ const loginUser = asyncHandler( async (req,res) => {
         throw new Error('User not found, Register as user!')
     }
 
-    if(user && (await bcrypt.compare(password,user.password))){
+    if(user && (await bcrypt.compare(password[0],user.password))){
         res.status(200).json({
             _id: user._id,
             username: user.username,
