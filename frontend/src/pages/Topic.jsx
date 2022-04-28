@@ -125,9 +125,9 @@ function Topic() {
           <br />
           <div className="row pb-3">
             <div className="row text-center col-sm-1">
-              <FaCaretUp size={30} onClick={upVoteTopic} />
+              <FaCaretUp style={{cursor: 'pointer'}} size={30} onClick={upVoteTopic} />
               <span className="fs-4 text-center">{topic.votes.length}</span>
-              <FaCaretDown size={30} onClick={downVoteTopic} />
+              <FaCaretDown style={{cursor: 'pointer'}} size={30} onClick={downVoteTopic} />
             </div>
             <div className="col-sm-11">
               <p>{topic.body}</p>
@@ -171,22 +171,19 @@ function Topic() {
                       <span className="glyphicon glyphicon-time"></span>{" "}
                       Answered by {comment.user},{" "}
                       {new Date(comment.createdAt).toLocaleString("ta-LK")}.
-                      <button type="button" class="close" aria-label="Close" onClick={() => deleteComment(comment._id)}>
-                        <span aria-hidden="true">&times;</span>
-                      </button>
                     </div>
                     <div className="card-body">
                       <div className="row pb-3">
                         <div className="col-sm-1">
                           <div className="row text-center">
-                            <FaCaretUp
+                            <FaCaretUp style={{cursor: 'pointer'}}
                               size={30}
                               onClick={() => upVoteComment(comment._id)}
                             />
                             <span className="fs-5 text-center">
                               {comment.votes.length}
                             </span>
-                            <FaCaretDown
+                            <FaCaretDown style={{cursor: 'pointer'}}
                               size={30}
                               onClick={() => downVoteComment(comment._id)}
                             />
@@ -196,6 +193,8 @@ function Topic() {
                           <p>{comment.comment}</p>
                         </div>
                       </div>
+                      <a href="#" style={{textDecoration: "none"}}>share</a>{" "}
+                      <a href="#" style={{textDecoration: "none"}} onClick={() => deleteComment(comment._id)}>delete</a>
                     </div>
                   </div>
                   <br />
