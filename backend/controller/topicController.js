@@ -58,8 +58,8 @@ const setTopic = asyncHandler( async (req,res) => {
 
 
     const topic = await Topic.create({
-        title: req.body.title,
-        body: req.body.body,
+        title: req.body.title[0],
+        body: req.body.body[0],
         user: "625fa496cf1e9b640318fcbc",
     })
 

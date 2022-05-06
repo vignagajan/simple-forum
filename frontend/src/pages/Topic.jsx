@@ -40,7 +40,12 @@ function Topic() {
       })
       .then(function (response) {
         console.log(response);
-        window.location.reload();
+        let newComments = topic.comments;
+        newComments.push({
+          comment: comment[0],
+          user: "625fa496cf1e9b640318fcbc",
+        });
+        topic.comments = newComments;
       })
       .catch(function (error) {
         console.log(error);
@@ -64,7 +69,7 @@ function Topic() {
       .put(`/topic/${params.id}/up`)
       .then(function (response) {
         console.log(response);
-        window.location.reload();
+        topic.votes.push({ user: "625fa496cf1e9b640318fcbc" });
       })
       .catch(function (error) {
         console.log(error);
@@ -125,9 +130,17 @@ function Topic() {
           <br />
           <div className="row pb-3">
             <div className="row text-center col-sm-1">
-              <FaCaretUp style={{cursor: 'pointer'}} size={30} onClick={upVoteTopic} />
+              <FaCaretUp
+                style={{ cursor: "pointer" }}
+                size={30}
+                onClick={upVoteTopic}
+              />
               <span className="fs-4 text-center">{topic.votes.length}</span>
-              <FaCaretDown style={{cursor: 'pointer'}} size={30} onClick={downVoteTopic} />
+              <FaCaretDown
+                style={{ cursor: "pointer" }}
+                size={30}
+                onClick={downVoteTopic}
+              />
             </div>
             <div className="col-sm-11">
               <p>{topic.body}</p>
@@ -176,14 +189,16 @@ function Topic() {
                       <div className="row pb-3">
                         <div className="col-sm-1">
                           <div className="row text-center">
-                            <FaCaretUp style={{cursor: 'pointer'}}
+                            <FaCaretUp
+                              style={{ cursor: "pointer" }}
                               size={30}
                               onClick={() => upVoteComment(comment._id)}
                             />
                             <span className="fs-5 text-center">
                               {comment.votes.length}
                             </span>
-                            <FaCaretDown style={{cursor: 'pointer'}}
+                            <FaCaretDown
+                              style={{ cursor: "pointer" }}
                               size={30}
                               onClick={() => downVoteComment(comment._id)}
                             />
@@ -193,8 +208,16 @@ function Topic() {
                           <p>{comment.comment}</p>
                         </div>
                       </div>
-                      <a href="#" style={{textDecoration: "none"}}>share</a>{" "}
-                      <a href="#" style={{textDecoration: "none"}} onClick={() => deleteComment(comment._id)}>delete</a>
+                      <a href="#" style={{ textDecoration: "none" }}>
+                        share
+                      </a>{" "}
+                      <a
+                        href="#"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => deleteComment(comment._id)}
+                      >
+                        delete
+                      </a>
                     </div>
                   </div>
                   <br />
