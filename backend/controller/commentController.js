@@ -37,7 +37,7 @@ const addComment = asyncHandler(async (req, res) => {
   }
   topic.comments.push({
     comment: req.body.comment,
-    user: "625fa496cf1e9b640318fcbc",
+    user: req.user.id,
   });
   topic.save(function (err) {
     if (err) {
@@ -45,7 +45,7 @@ const addComment = asyncHandler(async (req, res) => {
       throw new Error(err);
     }
   });
-  res.status(200).json({ comment: req.body.comment, user: "625fa496cf1e9b640318fcbc" });
+  res.status(200).json({ comment: req.body.comment, user: req.user.id });
 });
 
 /*

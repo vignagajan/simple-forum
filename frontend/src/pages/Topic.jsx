@@ -1,6 +1,7 @@
 import { useParams } from "react-router-dom";
 import axios from "../axios";
 import { useEffect, useState } from "react";
+import { FaCaretUp, FaCaretDown } from "react-icons/fa";
 
 function Topic() {
   const params = useParams();
@@ -39,6 +40,71 @@ function Topic() {
       })
       .then(function (response) {
         console.log(response);
+        let newComments = topic.comments;
+        newComments.push({
+          comment: comment[0],
+          user: "625fa496cf1e9b640318fcbc",
+        });
+        topic.comments = newComments;
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const deleteComment = (commentId) => {
+    axios
+      .delete(`/topic/${params.id}/${commentId}`)
+      .then(function (response) {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const upVoteTopic = () => {
+    axios
+      .put(`/topic/${params.id}/up`)
+      .then(function (response) {
+        console.log(response);
+        topic.votes.push({ user: "625fa496cf1e9b640318fcbc" });
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const downVoteTopic = () => {
+    axios
+      .put(`/topic/${params.id}/down`)
+      .then(function (response) {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const upVoteComment = (commentId) => {
+    axios
+      .put(`/topic/${params.id}/${commentId}/up`)
+      .then(function (response) {
+        console.log(response);
+        window.location.reload();
+      })
+      .catch(function (error) {
+        console.log(error);
+      });
+  };
+
+  const downVoteComment = (commentId) => {
+    axios
+      .put(`/topic/${params.id}/${commentId}/down`)
+      .then(function (response) {
+        console.log(response);
         window.location.reload();
       })
       .catch(function (error) {
@@ -58,14 +124,31 @@ function Topic() {
           <div className="h6">
             <span className="glyphicon glyphicon-time"></span> Asked by{" "}
             {topic.user.name},{" "}
-            {new Date(topic.createdAt).toLocaleString("en-US")}.
+            {new Date(topic.createdAt).toLocaleString("ta-LK")}.
           </div>
           <hr />
           <br />
-          <p>{topic.body}</p>
+          <div className="row pb-3">
+            <div className="row text-center col-sm-1">
+              <FaCaretUp
+                style={{ cursor: "pointer" }}
+                size={30}
+                onClick={upVoteTopic}
+              />
+              <span className="fs-4 text-center">{topic.votes.length}</span>
+              <FaCaretDown
+                style={{ cursor: "pointer" }}
+                size={30}
+                onClick={downVoteTopic}
+              />
+            </div>
+            <div className="col-sm-11">
+              <p>{topic.body}</p>
+            </div>
+          </div>
           <hr />
 
-          <div className="h6">Leave a Comment:</div>
+          <div className="h6">Leave an Answer:</div>
           <form>
             <div className="form-group">
               <textarea
@@ -84,32 +167,71 @@ function Topic() {
           </form>
           <br />
           <br />
-          <p className="pt-3">
+          <p className="h4 pt-3">
             <span className="badge bg-secondary display-6">
               {topic.comments.length}
             </span>{" "}
-            Comments:
+            Answers:
           </p>
           <br />
-
+          <hr />
           <div className="row">
             {topic.comments.map((comment, i) => {
               return (
-                <div key={i} className="col-sm-12">
-                  <div>
-                    <b>{comment.user}</b>{" "}
-                    <small>
-                      {new Date(comment.createdAt).toLocaleString("en-US")}
-                    </small>
+                <div key={i}>
+                  <div className="card">
+                    <div className="card-header">
+                      <span className="glyphicon glyphicon-time"></span>{" "}
+                      Answered by {comment.user},{" "}
+                      {new Date(comment.createdAt).toLocaleString("ta-LK")}.
+                    </div>
+                    <div className="card-body">
+                      <div className="row pb-3">
+                        <div className="col-sm-1">
+                          <div className="row text-center">
+                            <FaCaretUp
+                              style={{ cursor: "pointer" }}
+                              size={30}
+                              onClick={() => upVoteComment(comment._id)}
+                            />
+                            <span className="fs-5 text-center">
+                              {comment.votes.length}
+                            </span>
+                            <FaCaretDown
+                              style={{ cursor: "pointer" }}
+                              size={30}
+                              onClick={() => downVoteComment(comment._id)}
+                            />
+                          </div>
+                        </div>
+                        <div className="col-sm-11">
+                          <p>{comment.comment}</p>
+                        </div>
+                      </div>
+                      <a href="#" style={{ textDecoration: "none" }}>
+                        share
+                      </a>{" "}
+                      <a
+                        href="#"
+                        style={{ textDecoration: "none" }}
+                        onClick={() => deleteComment(comment._id)}
+                      >
+                        delete
+                      </a>
+                    </div>
                   </div>
-                  <p className="alert alert-secondary">{comment.comment}</p>
+                  <br />
                 </div>
               );
             })}
           </div>
         </div>
       ) : (
-        <div>Loading</div>
+        <div className="d-flex justify-content-center py-5">
+          <div className="spinner-border" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
       )}
     </div>
   );
