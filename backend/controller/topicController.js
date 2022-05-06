@@ -23,7 +23,7 @@ const getTopics = asyncHandler( async (req,res) => {
 
 const getMyTopics = asyncHandler( async (req,res) => {
 
-    const topics = await Topic.find({ user: "625fa496cf1e9b640318fcbc" })
+    const topics = await Topic.find({ user: req.user.id })
     res.status(200).json(topics)
 
 })
@@ -117,11 +117,11 @@ const upVoteTopic = asyncHandler(async (req, res) => {
       throw new Error("Topic not found");
     }
     
-    if (topic.votes.find((el) => el.user == "625fa496cf1e9b640318fcbc")) {
+    if (topic.votes.find((el) => el.user == req.user.id)) {
       res.status(400);
       throw new Error("Already voted");
     }
-    topic.votes.push({ user: "625fa496cf1e9b640318fcbc" });
+    topic.votes.push({ user: req.user.id });
     topic.save(function (err) {
       if (err) {
         res.status(400);
@@ -142,7 +142,7 @@ const upVoteTopic = asyncHandler(async (req, res) => {
       res.status(400);
       throw new Error("Topic not found");
     }
-    const vote = topic.votes.find((el) => el.user == "625fa496cf1e9b640318fcbc");
+    const vote = topic.votes.find((el) => el.user == req.user.id);
     if (!vote) {
       res.status(400);
       throw new Error("Not voted yet");
