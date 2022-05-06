@@ -37,7 +37,7 @@ const addComment = asyncHandler(async (req, res) => {
   }
   topic.comments.push({
     comment: req.body.comment,
-    user: "625fa496cf1e9b640318fcbc",
+    user: req.user.id,
   });
   topic.save(function (err) {
     if (err) {
@@ -45,7 +45,7 @@ const addComment = asyncHandler(async (req, res) => {
       throw new Error(err);
     }
   });
-  res.status(200).json({ comment: req.body.comment, user: "625fa496cf1e9b640318fcbc " });
+  res.status(200).json({ comment: req.body.comment, user: req.user.id });
 });
 
 /*
@@ -106,11 +106,11 @@ const upVoteComment = asyncHandler(async (req, res) => {
     throw new Error("Topic not found");
   }
   const comment = topic.comments.id(req.params.cid);
-  if (comment.votes.find((el) => el.user == "625fa496cf1e9b640318fcbc")) {
+  if (comment.votes.find((el) => el.user == req.user.id)) {
     res.status(400);
     throw new Error("Already voted");
   }
-  comment.votes.push({ user: "625fa496cf1e9b640318fcbc" });
+  comment.votes.push({ user: req.user.id });
   topic.save(function (err) {
     if (err) {
       res.status(400);
@@ -132,7 +132,7 @@ const downVoteComment = asyncHandler(async (req, res) => {
     throw new Error("Topic not found");
   }
   const comment = topic.comments.id(req.params.cid);
-  const vote = comment.votes.find((el) => el.user == "625fa496cf1e9b640318fcbc");
+  const vote = comment.votes.find((el) => el.user == req.user.id);
   if (!vote) {
     res.status(400);
     throw new Error("Not voted yet");
